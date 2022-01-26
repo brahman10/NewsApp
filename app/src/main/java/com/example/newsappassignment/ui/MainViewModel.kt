@@ -15,8 +15,8 @@ class MainViewModel @Inject
 constructor(
     private val mainRepo: MainRepo
 ):ViewModel(){
-    private val _dataState :MutableLiveData<DataState<List<Articles>>> = MutableLiveData()
-    val dataState : LiveData<DataState<List<Articles>>>
+    private val _dataState :MutableLiveData<DataState<ArrayList<Articles>>> = MutableLiveData()
+    val dataState : LiveData<DataState<ArrayList<Articles>>>
         get () = _dataState
 
     fun setState(mainStateEvent:MainStateEvent)

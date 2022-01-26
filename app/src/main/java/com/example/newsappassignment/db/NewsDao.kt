@@ -12,5 +12,5 @@ interface NewsDao {
     suspend fun insert(articles: Articles):Long
 
     @Query("SELECT * FROM news ")
-    suspend fun getAllNews():List<Articles>
+    suspend fun getAllSavedNews():List<Articles>
 }

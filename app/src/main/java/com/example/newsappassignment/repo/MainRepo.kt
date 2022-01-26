@@ -12,17 +12,12 @@ class MainRepo constructor(
     private val retrofitInterface: RetrofitInterface
 ) {
 
-    suspend fun getAllNews(): Flow<DataState<List<Articles>>> = flow {
+    suspend fun getAllNews(): Flow<DataState<ArrayList<Articles>>> = flow {
         emit(DataState.Loading)
         try {
             val response = retrofitInterface.getAllFeed("dd3901d332f6455fb51be6cb4c6c5048","all")
             val articles = response.articles
-            for(article in articles)
-            {
-                newsDao.insert(article)
-            }
-            val articlesCache = newsDao.getAllNews()
-            emit(DataState.Success(articlesCache))
+            emit(DataState.Success(articles))
         }
         catch (e:Exception)
         {
