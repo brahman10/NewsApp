@@ -22,9 +22,9 @@ class MainActivity : AppCompatActivity(),NewsAdapter.OnItemClickListener {
     var list= arrayListOf<Articles>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        //this.requestWindowFeature(Window.FEATURE_NO_TITLE)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        supportActionBar?.hide()
+        //supportActionBar?.hide()
         initObservers()
         viewModel.setState(MainStateEvent.GetNewsEvent)
 
