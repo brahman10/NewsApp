@@ -43,7 +43,10 @@ data class Articles (
 
     @ColumnInfo(name = "content")
     @SerializedName("content")
-    var content: String? = null
+    var content: String? = null,
+
+    @ColumnInfo(name = "isSaved")
+    var isSaved: Boolean = false
 
 )
 

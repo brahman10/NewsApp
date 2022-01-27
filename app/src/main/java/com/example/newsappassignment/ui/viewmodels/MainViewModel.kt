@@ -19,6 +19,10 @@ constructor(
     val dataState : LiveData<DataState<ArrayList<Articles>>>
         get () = _dataState
 
+    var searchQuery="all"
+
+    var list= arrayListOf<Articles>()
+
     fun setState(mainStateEvent:MainStateEvent)
     {
         viewModelScope.launch {
@@ -26,7 +30,13 @@ constructor(
             {
                 is MainStateEvent.GetNewsEvent->
                 {
-                    mainRepo.getAllNews().onEach { dataState ->
+                    mainRepo.getAllNews("all").onEach { dataState ->
+                        _dataState.value = dataState
+                    }.launchIn(viewModelScope)
+                }
+                is MainStateEvent.SearchNewsEvent->
+                {
+                    mainRepo.getAllNews(searchQuery).onEach { dataState ->
                         _dataState.value = dataState
                     }.launchIn(viewModelScope)
                 }
@@ -37,9 +47,29 @@ constructor(
             }
         }
     }
+
+    fun saveArticle(position:Int)
+    {
+        viewModelScope.launch {
+            list[position].isSaved=true
+            mainRepo.insertSavedNews(list[position])
+        }
+    }
+
+    fun UnSaveArticle(position:Int)
+    {
+        list[position].isSaved=false
+        viewModelScope.launch {
+            list[position].url.let {
+                it?.let { it1 -> mainRepo.removeArticle(it1) }
+            }
+
+        }
+    }
 }
 
 sealed class MainStateEvent{
     object GetNewsEvent:MainStateEvent()
+    object SearchNewsEvent:MainStateEvent()
     object None:MainStateEvent()
 }

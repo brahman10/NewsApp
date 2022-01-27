@@ -5,7 +5,9 @@
       <map>
         <entry key="app/src/main/res/font/queens_park_bold.xml" value="0.3230769230769231" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_save.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_news.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/item_saves.xml" value="0.375" />
       </map>
     </option>
   </component>

@@ -1,16 +1,18 @@
-package com.example.newsappassignment.ui
+package com.example.newsappassignment.ui.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.view.Window
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import com.example.newsappassignment.R
-import com.example.newsappassignment.data.Articles
 import com.example.newsappassignment.data.DataState
 import com.example.newsappassignment.databinding.ActivityMainBinding
+import com.example.newsappassignment.ui.MainStateEvent
+import com.example.newsappassignment.ui.MainViewModel
 import com.example.newsappassignment.ui.adapters.NewsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,20 +21,36 @@ class MainActivity : AppCompatActivity(),NewsAdapter.OnItemClickListener {
     private val viewModel : MainViewModel by viewModels()
     lateinit var binding: ActivityMainBinding
     lateinit var adapter: NewsAdapter
-    var list= arrayListOf<Articles>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //this.requestWindowFeature(Window.FEATURE_NO_TITLE)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        //supportActionBar?.hide()
         initObservers()
+        initListeners()
         viewModel.setState(MainStateEvent.GetNewsEvent)
-
     }
+
+    private fun initListeners(){
+        binding.cvSave.setOnClickListener {
+            startActivity(Intent(this,SaveActivity::class.java))
+        }
+        binding.etSearch.addTextChangedListener {
+            if(it.toString().length>3)
+            {
+                viewModel.searchQuery = it.toString()
+                viewModel.setState(MainStateEvent.SearchNewsEvent)
+            }
+            else
+            {
+                viewModel.searchQuery = "all"
+                viewModel.setState(MainStateEvent.GetNewsEvent)
+            }
+        }
+    }
+
 
     private fun initData()
     {
-        adapter = NewsAdapter(this,list,this)
+        adapter = NewsAdapter(this,viewModel.list,this)
         binding.rvNews.adapter = adapter
         adapter.notifyDataSetChanged()
     }
@@ -53,7 +71,7 @@ class MainActivity : AppCompatActivity(),NewsAdapter.OnItemClickListener {
                 }
                 is DataState.Success->
                 {
-                    list = dataState.data
+                    viewModel.list = dataState.data
                     initData()
                     binding.pbNews.visibility= View.GONE
                     adapter.notifyDataSetChanged()
@@ -72,6 +90,12 @@ class MainActivity : AppCompatActivity(),NewsAdapter.OnItemClickListener {
     }
 
     override fun onSaveClicked(newsId: Int) {
-        showMsg("onSaveClicked $newsId")
+        viewModel.saveArticle(newsId)
+        showMsg("Article Saved Successfully")
+    }
+
+    override fun onUnSaveClicked(newsId: Int) {
+        viewModel.UnSaveArticle(newsId)
+        showMsg("Article UnSaved Successfully")
     }
 }
